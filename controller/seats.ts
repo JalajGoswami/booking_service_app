@@ -1,6 +1,5 @@
 import { Request, Response } from 'express'
 import db from '../prisma/db'
-import { getError } from '../utils/errorHandlers'
 import { Seat } from '@prisma/client'
 
 export async function getSeats(req: Request, res: Response) {
