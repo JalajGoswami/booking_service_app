@@ -15,6 +15,7 @@ async function main() {
     app.use(express.json())
     app.use(express.urlencoded({ extended: true }))
 
+    app.use(express.static('public'))
 
     // router setup
     app.use('/', router)
