@@ -15,3 +15,10 @@ export const createBookingSchema = Yup.object({
         .min(1, 'Atleast 1 seat required')
         .required('Seats is required')
 }).noUnknown()
+
+export const getBookingSchema = Yup.object({
+    email: Yup.string()
+        .email('Not a valid Email'),
+    phone: Yup.string()
+        .matches(/^[6-9]\d{9}$/, 'Not a valid Phone No.')
+}).noUnknown()
