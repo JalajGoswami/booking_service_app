@@ -2,6 +2,7 @@ import { Request, Response } from 'express'
 import db from '../prisma/db'
 import { getError } from '../utils/errorHandlers'
 import { createBookingSchema, getBookingSchema } from '../utils/schema'
+import { sendEmail } from '../utils/mail'
 
 export async function createBooking(req: Request, res: Response) {
     try {
@@ -11,7 +12,8 @@ export async function createBooking(req: Request, res: Response) {
 
         const bookedSeat = await db.seat.findFirst({
             where: {
-                id: { in: body.seats.filter(Boolean) as number[] }
+                id: { in: body.seats.filter(Boolean) as number[] },
+                bookingId: { not: null }
             }
         })
 
@@ -23,6 +25,14 @@ export async function createBooking(req: Request, res: Response) {
                 ...body,
                 seats: { connect: seatIds }
             }
+        })
+
+        await sendEmail({
+            to: data.email,
+            subject: 'Booking Completed',
+            text: `Your booking with id ${data.id} is successfully completed.`,
+            html: `<h4>Your booking with id <b>${data.id}</b> is successfully completed.</h4>`,
+            from: process.env.EMAIL_USER ?? '',
         })
 
         res.json(data)
