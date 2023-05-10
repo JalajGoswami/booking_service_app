@@ -1,0 +1,34 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "cockroachdb"
+  url      = env("DATABASE_URL")
+}
+
+model Seat {
+  id              Int       @id @default(sequence())
+  seat_identifier String
+  seatClass       SeatClass @relation(fields: [seat_class], references: [seat_class])
+  seat_class      String
+  Booking         Booking?  @relation(fields: [bookingId], references: [id])
+  bookingId       Int?
+}
+
+model SeatClass {
+  id           Int    @id @default(sequence())
+  seat_class   String @unique
+  min_price    Float?
+  normal_price Float?
+  max_price    Float?
+  seats        Seat[]
+}
+
+model Booking {
+  id    Int    @id @default(sequence())
+  name  String
+  email String
+  phone String
+  seats Seat[]
+}
